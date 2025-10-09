@@ -29,7 +29,7 @@ function Home() {
           paddingBottom: "0.5rem",
         }}
       >
-        ❤️ Welcome to SkillBridge
+        Welcome to SkillBridge
       </h1>
 
       <p
@@ -95,7 +95,6 @@ function Home() {
           🎓 Browse Courses
         </a>
       </div>
-
       <style>
         {`
           @keyframes redFlow {
@@ -108,5 +107,4 @@ function Home() {
     </div>
   );
 }
-
 export default Home;
