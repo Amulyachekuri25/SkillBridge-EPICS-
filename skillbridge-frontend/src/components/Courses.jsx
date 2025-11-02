@@ -1,34 +1,126 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 
-function Courses() {
-  const [skill, setSkill] = useState("");
-  const [courses, setCourses] = useState([]);
-
-  const fetchCourses = async () => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/courses?skill=${skill}`);
-      setCourses(res.data);
-    } catch (err) {
-      alert("Failed to fetch courses");
-    }
-  };
+export default function Courses() {
+  const courses = [
+    {
+      name: "Machine Learning Fundamentals",
+      platform: "Coursera",
+      duration: "6 weeks",
+    },
+    {
+      name: "Full Stack Web Development",
+      platform: "NPTEL",
+      duration: "8 weeks",
+    },
+    {
+      name: "Data Analytics with Python",
+      platform: "edX",
+      duration: "5 weeks",
+    },
+  ];
 
   return (
     <div
-    style={{width:"100vw",height:"100vh"}}>
-      <h2>Courses</h2>
-      <input type="text" placeholder="Enter Skill" value={skill} onChange={(e) => setSkill(e.target.value)} />
-      <button onClick={fetchCourses}>Search</button>
-      <ul>
-        {courses.map((c) => (
-          <li key={c.id}>
-            <a href={c.link} target="_blank">{c.title}</a> by {c.provider} (Rank {c.rank})
-          </li>
-        ))}
-      </ul>
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #0b67c2, #00bfa5)",
+        padding: "60px 20px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+      }}
+    >
+      <div
+        style={{
+          background: "rgba(255, 255, 255, 0.95)",
+          borderRadius: "20px",
+          padding: "40px 60px",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+          width: "90%",
+          maxWidth: "1100px",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            color: "#0b67c2",
+            fontSize: "2rem",
+            fontWeight: "700",
+            marginBottom: "40px",
+          }}
+        >
+          Recommended Courses
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "25px",
+          }}
+        >
+          {courses.map((course, index) => (
+            <div
+              key={index}
+              style={{
+                background: "white",
+                borderRadius: "15px",
+                padding: "25px 20px",
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.08)",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-6px)";
+                e.currentTarget.style.boxShadow =
+                  "0 6px 18px rgba(0, 0, 0, 0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 10px rgba(0, 0, 0, 0.08)";
+              }}
+            >
+              <h3
+                style={{
+                  color: "#0b67c2",
+                  fontWeight: "700",
+                  marginBottom: "10px",
+                }}
+              >
+                {course.name}
+              </h3>
+              <p
+                style={{
+                  fontWeight: "500",
+                  color: "#333",
+                  marginBottom: "6px",
+                }}
+              >
+                Platform: {course.platform}
+              </p>
+              <p style={{ color: "#5b7684", marginBottom: "18px" }}>
+                Duration: {course.duration}
+              </p>
+              <button
+                style={{
+                  background: "linear-gradient(90deg, #0b67c2, #00bfa5)",
+                  border: "none",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  transition: "opacity 0.3s ease",
+                }}
+                onMouseEnter={(e) => (e.target.style.opacity = "0.85")}
+                onMouseLeave={(e) => (e.target.style.opacity = "1")}
+              >
+                Enroll
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
-
-export default Courses;
