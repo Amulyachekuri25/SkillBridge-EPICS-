@@ -18,7 +18,7 @@ export default function Landing() {
       </svg>
 
       <div className="container">
-        <nav className="navbar" role="navigation" aria-label="main">
+        {/* <nav className="navbar" role="navigation" aria-label="main">
           <a className="brand" href="/home">SkillBridge</a>
           <div className="nav-links">
             <a href="/about">About</a>
@@ -26,7 +26,7 @@ export default function Landing() {
             <a href="/contact">Contact</a>
             <a className="link" href="/login">Login</a>
           </div>
-        </nav>
+        </nav> */}
 
         <section className="landing">
           <div className="landing-hero">
