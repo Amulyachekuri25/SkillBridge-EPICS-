@@ -16,7 +16,6 @@ import ManageInternships from "./pages/ManageInternships";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 
-
 export default function App() {
   const isLoggedIn = !!localStorage.getItem("token");
   const isAdmin = !!localStorage.getItem("adminToken");
@@ -24,6 +23,7 @@ export default function App() {
   return (
     <>
       <Navbar />
+
       <Routes>
         {/* ---------- Public Pages ---------- */}
         <Route path="/" element={<Home />} />
@@ -33,11 +33,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
-        
 
-
-
-        {/* ---------- Private Student Pages ---------- */}
+        {/* ---------- Student Pages ---------- */}
         <Route
           path="/courses"
           element={isLoggedIn ? <Courses /> : <Navigate to="/login" />}
@@ -46,17 +43,22 @@ export default function App() {
           path="/internships"
           element={isLoggedIn ? <Internships /> : <Navigate to="/login" />}
         />
-        <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />}/>
+        <Route
+          path="/profile"
+          element={isLoggedIn ? <Profile /> : <Navigate to="/login" />}
+        />
 
         {/* ---------- Admin Pages ---------- */}
         <Route
           path="/admin/*"
           element={isAdmin ? <AdminLayout /> : <Navigate to="/adminlogin" />}
         >
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="students" element={<ManageStudents />} />
           <Route path="internships" element={<ManageInternships />} />
           <Route path="reports" element={<Reports />} />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
         </Route>
       </Routes>
     </>
