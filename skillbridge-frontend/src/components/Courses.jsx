@@ -1,125 +1,130 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Courses() {
-  const courses = [
-    {
-      name: "Machine Learning Fundamentals",
-      platform: "Coursera",
-      duration: "6 weeks",
-    },
-    {
-      name: "Full Stack Web Development",
-      platform: "NPTEL",
-      duration: "8 weeks",
-    },
-    {
-      name: "Data Analytics with Python",
-      platform: "edX",
-      duration: "5 weeks",
-    },
-  ];
+  const [skill, setSkill] = useState("");
+  const [searched, setSearched] = useState(false);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!skill.trim()) {
+      alert("Please enter a skill to search for courses.");
+      return;
+    }
+    setSearched(true);
+  };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #0b67c2, #00bfa5)",
-        padding: "60px 20px",
+        background: "linear-gradient(135deg, #e8f3ff, #ffffff)",
         display: "flex",
         justifyContent: "center",
-        alignItems: "flex-start",
+        alignItems: "center",
+        padding: "40px 20px",
       }}
     >
       <div
         style={{
-          background: "rgba(255, 255, 255, 0.95)",
-          borderRadius: "20px",
-          padding: "40px 60px",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-          width: "90%",
-          maxWidth: "1100px",
+          background: "white",
+          borderRadius: "24px",
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+          width: "85%",
+          maxWidth: "1200px",
+          padding: "60px 80px",
+          textAlign: "center",
         }}
       >
-        <h2
+        <h1
           style={{
-            textAlign: "center",
-            color: "#0b67c2",
-            fontSize: "2rem",
+            fontSize: "2.6rem",
             fontWeight: "700",
-            marginBottom: "40px",
+            color: "#0b67c2",
+            marginBottom: "30px",
           }}
         >
-          Recommended Courses
-        </h2>
+          Explore Courses
+        </h1>
 
-        <div
+        <p
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            color: "#555",
+            fontSize: "1.1rem",
+            marginBottom: "50px",
+          }}
+        >
+          Search for courses and certifications that align with your skill
+          interests and career goals.
+        </p>
+
+        <form
+          onSubmit={handleSearch}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             gap: "25px",
           }}
         >
-          {courses.map((course, index) => (
-            <div
-              key={index}
-              style={{
-                background: "white",
-                borderRadius: "15px",
-                padding: "25px 20px",
-                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.08)",
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-6px)";
-                e.currentTarget.style.boxShadow =
-                  "0 6px 18px rgba(0, 0, 0, 0.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 10px rgba(0, 0, 0, 0.08)";
-              }}
-            >
-              <h3
-                style={{
-                  color: "#0b67c2",
-                  fontWeight: "700",
-                  marginBottom: "10px",
-                }}
-              >
-                {course.name}
-              </h3>
-              <p
-                style={{
-                  fontWeight: "500",
-                  color: "#333",
-                  marginBottom: "6px",
-                }}
-              >
-                Platform: {course.platform}
-              </p>
-              <p style={{ color: "#5b7684", marginBottom: "18px" }}>
-                Duration: {course.duration}
-              </p>
-              <button
-                style={{
-                  background: "linear-gradient(90deg, #0b67c2, #00bfa5)",
-                  border: "none",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                  transition: "opacity 0.3s ease",
-                }}
-                onMouseEnter={(e) => (e.target.style.opacity = "0.85")}
-                onMouseLeave={(e) => (e.target.style.opacity = "1")}
-              >
-                Enroll
-              </button>
-            </div>
-          ))}
-        </div>
+          <label
+            style={{
+              fontWeight: "600",
+              fontSize: "1.2rem",
+              color: "#004080",
+            }}
+          >
+            Enter a Skill You Want to Learn
+          </label>
+
+          <input
+            type="text"
+            value={skill}
+            onChange={(e) => setSkill(e.target.value)}
+            placeholder="e.g. Data Science, Cloud Computing, Web Development"
+            style={{
+              width: "50%",
+              padding: "14px 16px",
+              fontSize: "1rem",
+              borderRadius: "10px",
+              border: "1px solid #c9d6de",
+              outline: "none",
+              background: "#f9fbfd",
+              color: "#333",
+            }}
+          />
+
+          <button
+            type="submit"
+            style={{
+              marginTop: "25px",
+              background: "linear-gradient(90deg, #0b67c2, #00bfa5)",
+              color: "white",
+              padding: "14px 40px",
+              borderRadius: "10px",
+              fontSize: "1.1rem",
+              fontWeight: "600",
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 6px 15px rgba(0, 111, 180, 0.2)",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => (e.target.style.opacity = "0.85")}
+            onMouseLeave={(e) => (e.target.style.opacity = "1")}
+          >
+            Search Courses
+          </button>
+        </form>
+
+        {searched && (
+          <div style={{ marginTop: "50px" }}>
+            <h3 style={{ color: "#0b67c2" }}>
+              Showing results for: <i>{skill}</i>
+            </h3>
+            <p style={{ color: "#555", marginTop: "10px" }}>
+              (Connect your backend or API here to display real course data.)
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
