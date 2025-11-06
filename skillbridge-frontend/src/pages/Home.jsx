@@ -1,110 +1,35 @@
 import React from "react";
 
-function Home() {
+export default function Home() {
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        background: "linear-gradient(135deg, #b71c1c, #d32f2f, #c62828, #880e4f)",
-        backgroundSize: "400% 400%",
-        animation: "redFlow 10s ease infinite",
-        color: "#fff",
-        padding: "5vw",
-        boxSizing: "border-box",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "clamp(2rem, 5vw, 4rem)",
-          fontWeight: "bold",
-          marginBottom: "1.5rem",
-          textShadow: "2px 2px 10px rgba(0,0,0,0.4)",
-          borderBottom: "3px solid #ffffff88",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        Welcome to SkillBridge
-      </h1>
-
-      <p
-        style={{
-          fontSize: "clamp(1rem, 2vw, 1.4rem)",
-          maxWidth: "90%",
-          marginBottom: "2rem",
-          lineHeight: "1.8",
-          color: "#ffebee",
-        }}
-      >
-        Your gateway to{" "}
-        <strong style={{ color: "#ffffff" }}>Internships</strong> and{" "}
-        <strong style={{ color: "#ffeaea" }}>Skill-Building Courses</strong>.  
-        Helping students grow, achieve, and succeed 🚀.
-      </p>
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "1rem",
-          width: "100%",
-          maxWidth: "900px",
-        }}
-      >
-        <a
-          href="/internships"
-          style={{
-            background: "#ffffff",
-            color: "#b71c1c",
-            padding: "1rem 2rem",
-            borderRadius: "12px",
-            fontSize: "1rem",
-            fontWeight: "600",
-            textDecoration: "none",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.3)",
-            transition: "0.3s",
-            flex: "1 1 250px",
-            textAlign: "center",
-          }}
-        >
-          🌟 Explore Internships
-        </a>
-
-        <a
-          href="/courses"
-          style={{
-            background: "#ffffff",
-            color: "#880e4f",
-            padding: "1rem 2rem",
-            borderRadius: "12px",
-            fontSize: "1rem",
-            fontWeight: "600",
-            textDecoration: "none",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.3)",
-            transition: "0.3s",
-            flex: "1 1 250px",
-            textAlign: "center",
-          }}
-        >
-          🎓 Browse Courses
-        </a>
+    <div className="container">
+      <div className="page-card">
+        <h2 className="section-header">Welcome to SkillBridge</h2>
+        <p style={{ color: "#35556c" }}>
+          Your personalized dashboard gives you quick access to internships,
+          curated courses, and progress insights. Explore below.
+        </p>
       </div>
-      <style>
-        {`
-          @keyframes redFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-          }
-        `}
-      </style>
+
+      <div className="grid">
+        <div className="card-sm">
+          <h3>🎓 Recommended Courses</h3>
+          <p>AI & ML, Web Development, Data Analytics</p>
+          <button className="btn-primary" style={{ marginTop: 12 }}>View Courses</button>
+        </div>
+
+        <div className="card-sm">
+          <h3>💼 Internship Matches</h3>
+          <p>Companies aligned with your skill profile</p>
+          <button className="btn-primary" style={{ marginTop: 12 }}>Find Internships</button>
+        </div>
+
+        <div className="card-sm">
+          <h3>📈 Your Learning Stats</h3>
+          <p>Track enrolled courses, completion rate, and badges earned.</p>
+          <button className="btn-primary" style={{ marginTop: 12 }}>View Progress</button>
+        </div>
+      </div>
     </div>
   );
 }
-export default Home;

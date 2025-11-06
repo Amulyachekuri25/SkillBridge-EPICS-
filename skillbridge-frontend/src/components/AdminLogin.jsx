@@ -14,10 +14,14 @@ export default function AdminLogin() {
         email,
         password,
       });
-      localStorage.setItem("adminToken", res.data.token);
-      localStorage.setItem("userType", "admin");
-      alert("Login successful!");
-      navigate("/admin/dashboard");
+
+      if (res.data && res.data.token) {
+        localStorage.setItem("adminToken", res.data.token);
+        localStorage.setItem("userType", "admin");
+        navigate("/admin/dashboard");
+      } else {
+        alert("Invalid response from server");
+      }
     } catch (err) {
       alert(err.response?.data?.error || "Login failed");
     }
@@ -26,93 +30,189 @@ export default function AdminLogin() {
   return (
     <div
       style={{
-        minHeight: "90vh",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #f7fbff, #e8f2ff)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "linear-gradient(135deg, #0b67c2, #00bfa5)",
+        fontFamily: "Inter, sans-serif",
       }}
     >
       <div
         style={{
-          background: "rgba(255, 255, 255, 0.95)",
-          borderRadius: "16px",
-          padding: "40px 50px",
-          boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
-          width: "380px",
+          background: "#fff",
+          borderRadius: "20px",
+          boxShadow: "0 10px 40px rgba(0,0,0,0.05)",
+          display: "flex",
+          width: "850px",
+          overflow: "hidden",
         }}
       >
-        <h2
+        {/* Left Section */}
+        <div
           style={{
-            textAlign: "center",
-            color: "#0b67c2",
-            marginBottom: "30px",
-            fontWeight: "700",
+            flex: 1,
+            background: "linear-gradient(135deg, #0b67c2, #00bfa5)",
+            color: "white",
+            padding: "50px 40px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
-          Admin Login
-        </h2>
+          <h2 style={{ fontSize: "2rem", fontWeight: "700", marginBottom: "20px" }}>
+            Welcome back
+          </h2>
+          <p style={{ fontSize: "1rem", opacity: 0.9, lineHeight: 1.5 }}>
+            Enter your credentials to continue to your <b>SkillBridge Admin Dashboard</b>.
+          </p>
 
-        <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: "18px" }}>
-            <label style={{ fontWeight: "600", display: "block", marginBottom: "6px" }}>
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@example.com"
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "8px",
-                border: "1px solid #c9d6de",
-                outline: "none",
-              }}
-            />
+          <div
+            style={{
+              background: "rgba(255,255,255,0.15)",
+              borderRadius: "10px",
+              padding: "15px",
+              marginTop: "25px",
+              fontSize: "0.9rem",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <b>Tip:</b> Use your official admin email address to log in.  
+            Need help? Contact system support.
           </div>
 
-          <div style={{ marginBottom: "24px" }}>
-            <label style={{ fontWeight: "600", display: "block", marginBottom: "6px" }}>
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "8px",
-                border: "1px solid #c9d6de",
-                outline: "none",
-              }}
-            />
-          </div>
+          <p style={{ marginTop: "30px", fontSize: "0.9rem" }}>
+            Not an admin? Go back to <a href="/" style={{ color: "#fff", fontWeight: "600" }}>Home</a>
+          </p>
+        </div>
 
-          <div style={{ textAlign: "center" }}>
+        {/* Right Section */}
+        <div
+          style={{
+            flex: 1,
+            padding: "50px 60px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <h2 style={{ fontWeight: "700", color: "#0b2545", marginBottom: "20px" }}>Admin Sign In</h2>
+
+          <form onSubmit={handleLogin}>
+            <div style={{ marginBottom: "18px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontWeight: "600",
+                  color: "#0b2545",
+                }}
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@example.com"
+                required
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #cdd7e1",
+                  fontSize: "0.95rem",
+                  outline: "none",
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontWeight: "600",
+                  color: "#0b2545",
+                }}
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Your password"
+                required
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #cdd7e1",
+                  fontSize: "0.95rem",
+                  outline: "none",
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "25px",
+              }}
+            >
+              <label style={{ fontSize: "0.9rem", color: "#555" }}>
+                <input type="checkbox" style={{ marginRight: "6px" }} /> Remember me
+              </label>
+              <a
+                href="#"
+                style={{
+                  fontSize: "0.9rem",
+                  textDecoration: "none",
+                  color: "#0b67c2",
+                  fontWeight: "600",
+                }}
+              >
+                Forgot password?
+              </a>
+            </div>
+
             <button
               type="submit"
               style={{
+                width: "100%",
                 background: "linear-gradient(90deg, #0b67c2, #00bfa5)",
-                color: "white",
+                color: "#fff",
                 fontWeight: "600",
-                padding: "10px 28px",
+                padding: "12px",
                 border: "none",
                 borderRadius: "8px",
                 cursor: "pointer",
                 fontSize: "1rem",
-                transition: "opacity 0.3s ease",
+                transition: "0.3s",
               }}
+              onMouseOver={(e) =>
+                (e.target.style.boxShadow = "0 4px 15px rgba(0,191,165,0.4)")
+              }
+              onMouseOut={(e) => (e.target.style.boxShadow = "none")}
             >
-              Login
+              Sign in
             </button>
-          </div>
-        </form>
+          </form>
+
+          <p
+            style={{
+              marginTop: "25px",
+              fontSize: "0.9rem",
+              color: "#555",
+              textAlign: "center",
+            }}
+          >
+            Need help? Contact <b>support@skillbridge.com</b>
+          </p>
+        </div>
       </div>
     </div>
   );
