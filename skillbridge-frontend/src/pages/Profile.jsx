@@ -1,72 +1,77 @@
-import React, { useState, useEffect } from "react";
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { useNavigate } from "react-router-dom";
+
+// export default function Profile() {
+//   const [data, setData] = useState(null);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     axios
+//       .get("http://localhost:5000/api/profile", {
+//         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+//       })
+//       .then((res) => setData(res.data))
+//       .catch(() => navigate("/login"));
+//   }, [navigate]);
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("token");
+//     navigate("/login");
+//   };
+
+//   if (!data) return <h3 style={{ textAlign: "center", marginTop: 40 }}>Loading...</h3>;
+
+//   const { profile, internshipsApplied, coursesEnrolled } = data;
+
+//   return (
+//     <div className="container">
+//       <div className="page-card">
+//         <h2>Your Profile</h2>
+//       </div>
+
+//       <div className="profile-box">
+//         <p><strong>Name:</strong> {profile.full_name}</p>
+//         <p><strong>Roll No:</strong> {profile.roll_number || "Not Provided"}</p>
+//         <p><strong>Email:</strong> {profile.email}</p>
+//         <p><strong>Year:</strong> {profile.year}</p>
+//         <p><strong>Skills:</strong> {profile.skills || "Not Added Yet"}</p>
+
+//         <hr />
+
+//         <p><strong>Internships Applied:</strong> {internshipsApplied}</p>
+//         <p><strong>Courses Enrolled:</strong> {coursesEnrolled}</p>
+
+//         <button className="btn-primary" style={{ marginTop: 20 }} onClick={handleLogout}>
+//           Logout
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
+import React, { useEffect, useState } from "react";
 
 export default function Profile() {
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    role: "Student",
-  });
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Later this can come from backend API
-    const storedName = localStorage.getItem("userName") || "Your Name";
-    const storedEmail = localStorage.getItem("userEmail") || "yourmail@example.com";
-    setUser({ name: storedName, email: storedEmail, role: "Student" });
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
-  const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
-  const handleSave = () => {
-    // In future: send this data to backend via API
-    localStorage.setItem("userName", user.name);
-    localStorage.setItem("userEmail", user.email);
-    alert("Profile updated successfully!");
-  };
+  if (!user) return <p>Loading...</p>;
 
   return (
     <div className="container">
-      <div className="page-card" style={{ maxWidth: "600px", margin: "40px auto" }}>
-        <h2 className="section-header" style={{ textAlign: "center" }}>My Profile</h2>
-
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={user.name}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="form-group" style={{ marginBottom: "20px" }}>
-          <label>Role:</label>
-          <input
-            type="text"
-            value={user.role}
-            disabled
-            className="form-control"
-          />
-        </div>
-
-        <div style={{ textAlign: "center" }}>
-          <button className="btn-primary" onClick={handleSave}>
-            Save Changes
-          </button>
-        </div>
+      <h2>Your Profile</h2>
+      <div className="card" style={{ padding: "20px", maxWidth: "400px" }}>
+        <p><strong>Name:</strong> {user.full_name}</p>
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Roll Number:</strong> {user.roll_number}</p>
+        <p><strong>Year:</strong> {user.year}</p>
+        <p><strong>Skills:</strong> {user.skills || "Not Added"}</p>
       </div>
     </div>
   );

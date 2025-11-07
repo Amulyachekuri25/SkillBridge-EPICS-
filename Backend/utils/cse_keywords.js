@@ -1,0 +1,22 @@
+module.exports = [
+  "computer science", "data structures", "algorithms", "python", "java", "c++", "machine learning",
+  "deep learning", "ai", "artificial intelligence", "web development", "backend", "frontend",
+  "nodejs", "react", "angular", "vue", "flutter", "react native", "android", "ios", "swift",
+  "kotlin", "dart", "cloud", "aws", "azure", "gcp", "cybersecurity", "database", "mysql",
+  "mongodb", "postgresql", "redis", "oracle", "sql server", "nosql", "devops", "docker",
+  "kubernetes", "terraform", "ansible", "ci/cd", "jenkins", "microservices", "blockchain",
+  "solidity", "flutter", "data science", "big data", "hadoop", "spark", "pyspark", "nlp",
+  "opencv", "image processing", "computer vision", "software engineering", "full stack",
+  "data analytics", "linux", "git", "github", "bitbucket", "api", "rest api", "graphql",
+  "system design", "networking", "testing", "selenium", "junit", "mockito", "ui", "ux",
+  "app development", "mobile app", "web app", "java developer", "php", "dotnet", "rust",
+  "go", "swift", "typescript", "visual studio", "software developer", "data visualization",
+  "pandas", "numpy", "tensorflow", "keras", "pytorch", "neural network", "ai model", "mlops",
+  "chatbot", "flask", "django", "fastapi", "microservices", "data pipeline", "postman",
+  "json", "scraping", "selenium automation", "cloud computing", "software design", "python developer",
+  "raspberry pi", "arduino", "iot", "embedded systems", "tensorflow lite", "edge computing",
+  "hive", "kafka", "rabbitmq", "elasticsearch", "firebase", "android studio", "xcode",
+  "unity", "unreal engine", "game development", "cocos2d", "tensorflow js", "ml kit",
+  "computer graphics", "3d modeling", "robotics", "automation testing", "cyber security",
+  "penetration testing", "ethical hacking"
+];

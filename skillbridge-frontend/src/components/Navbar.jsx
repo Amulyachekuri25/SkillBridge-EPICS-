@@ -1,145 +1,210 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
+// import API from "../axiosConfig";
+// import { useNavigate } from "react-router-dom";
+
+// export default function Login() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const navigate = useNavigate();
+
+//   const handleLogin = async () => {
+//     try {
+//       const res = await API.post("/auth/login", { email, password });
+
+//       localStorage.setItem("token", res.data.token);
+//       localStorage.setItem("user", JSON.stringify(res.data.user));
+
+//       alert("Login successful");
+//       navigate("/home");
+//     } catch (err) {
+//       alert(err.response?.data?.error || "Login failed");
+//     }
+//   };
+
+//   return (
+//     <div className="auth-page">
+//       <div className="container auth-shell">
+//         <div className="auth-visual" aria-hidden>
+//           <h2>Welcome back</h2>
+//           <p>Enter your credentials to continue to your SkillBridge dashboard.</p>
+//           <div style={{ marginTop:18 }}>
+//             <div className="card">
+//               <strong>Tip:</strong> Use the same email you signed up with. Forgot password? Contact support.
+//             </div>
+//           </div>
+//           <div style={{ marginTop:16 }}>
+//             <small style={{ color:'#4b6b78' }}>New here? <a className="link" href="/signup">Create an account</a></small>
+//           </div>
+//         </div>
+
+//         <div className="form-card" role="form" aria-labelledby="login-heading">
+//           <h3 id="login-heading">Sign in</h3>
+
+//           <div className="form-group">
+//             <label>Email</label>
+//             <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" />
+//           </div>
+
+//           <div className="form-group">
+//             <label>Password</label>
+//             <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Your password" />
+//           </div>
+
+//           <div className="helper-row">
+//             <div style={{ display:'flex', gap:12, alignItems:'center' }}>
+//               <input id="remember" type="checkbox" style={{ width:16, height:16 }} />
+//               <label htmlFor="remember" style={{ margin:0, fontWeight:600 }}>Remember me</label>
+//             </div>
+//             <div>
+//               <button className="btn-primary" onClick={handleLogin}>Sign in</button>
+//             </div>
+//           </div>
+
+//           <div className="footer-note">Need help? Contact support@skillbridge.com</div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+          // import React from "react";
+          // import { useNavigate, Link } from "react-router-dom";
+
+          // export default function Navbar() {
+          //   const navigate = useNavigate();
+          //   const user = JSON.parse(localStorage.getItem("user"));
+
+          //   const handleLogout = () => {
+          //     localStorage.removeItem("token");
+          //     localStorage.removeItem("user");
+          //     navigate("/login");
+          //   };
+
+          //   return (
+          //     <nav className="navbar">
+          //       <div className="logo">SkillBridge</div>
+
+          //       <div className="nav-links">
+          //         <Link to="/home">Home</Link>
+          //         <Link to="/profile">Profile</Link>
+          //         <Link to="/internships">Internships</Link>
+          //         <Link to="/courses">Courses</Link>
+          //       </div>
+
+          //       <div className="nav-right">
+          //         {user && <span className="user-info">{user.name || user.email}</span>}
+          //         <button className="btn-logout" onClick={handleLogout}>
+          //           Logout
+          //         </button>
+          //       </div>
+          //     </nav>
+          //   );
+          // }
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const [showRoleSelect, setShowRoleSelect] = useState(false);
   const navigate = useNavigate();
+  const userToken = localStorage.getItem("token");
+  const adminToken = localStorage.getItem("adminToken");
 
-  const handleLoginClick = (e) => {
-    e.preventDefault();
-    setShowRoleSelect(true);
-  };
-
-  const handleRoleSelect = (role) => {
-    setShowRoleSelect(false);
-    if (role === "student") navigate("/login");
-    else if (role === "admin") navigate("/adminlogin");
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+    navigate("/login");
   };
 
   return (
     <>
+      {/* Navbar JSX */}
       <nav className="navbar">
-        <h2 className="logo">SkillBridge</h2>
-        <div className="nav-links">
+        <div className="nav-left">
+          <Link to="/" className="brand">SkillBridge</Link>
+        </div>
+
+        <div className="nav-right">
+          {/* Public Links */}
           <Link to="/">Home</Link>
           <Link to="/about">About</Link>
-          <Link to="/faq">FAQ</Link>
+          <Link to="/faq">FAQs</Link>
           <Link to="/contact">Contact</Link>
-          <a href="#" onClick={handleLoginClick}>Login</a>
-          <Link to="/profile">Profile</Link>
+
+          {/* Student Logged In */}
+          {userToken && (
+            <>
+              <Link to="/home">Dashboard</Link>
+              <Link to="/internships">Internships</Link>
+              <Link to="/courses">Courses</Link>
+              <Link to="/profile">Profile</Link>
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
+            </>
+          )}
+
+          {/* Admin Logged In */}
+          {adminToken && (
+            <>
+              <Link to="/admin/dashboard">Admin Dashboard</Link>
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
+            </>
+          )}
+
+          {/* Not Logged In */}
+          {!userToken && !adminToken && (
+            <>
+              <Link to="/login">Login</Link>
+              <Link to="/signup">Signup</Link>
+              <Link to="/adminlogin">Admin Login</Link>
+            </>
+          )}
         </div>
       </nav>
 
-      {/* ✨ Modern role selection modal */}
-      {showRoleSelect && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.45)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backdropFilter: "blur(4px)",
-            animation: "fadeIn 0.3s ease-in-out",
-            zIndex: 9999,
-          }}
-        >
-          <div
-            style={{
-              background:
-                "linear-gradient(135deg, #0b67c2 0%, #00bfa5 100%)",
-              padding: "35px 50px",
-              borderRadius: "18px",
-              boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
-              textAlign: "center",
-              color: "#fff",
-              width: "320px",
-              animation: "scaleIn 0.3s ease-in-out",
-            }}
-          >
-            <h2 style={{ marginBottom: "15px" }}>Select Your Role</h2>
-            <p style={{ fontSize: "14px", marginBottom: "25px", opacity: 0.9 }}>
-              Please choose your role to continue
-            </p>
+      {/* Inline CSS */}
+      <style>{`
+        .navbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 20px;
+          background-color: #f8f8f8;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <button
-                onClick={() => handleRoleSelect("student")}
-                style={{
-                  backgroundColor: "#ffffff",
-                  color: "#0b67c2",
-                  fontWeight: "600",
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  flex: 1,
-                  marginRight: "10px",
-                  transition: "0.3s",
-                }}
-                onMouseOver={(e) => (e.target.style.backgroundColor = "#e1f5fe")}
-                onMouseOut={(e) => (e.target.style.backgroundColor = "#ffffff")}
-              >
-                Student
-              </button>
+        .nav-left .brand {
+          font-size: 1.5rem;
+          font-weight: bold;
+          text-decoration: none;
+          color: #333;
+        }
 
-              <button
-                onClick={() => handleRoleSelect("admin")}
-                style={{
-                  backgroundColor: "#ffffff",
-                  color: "#00bfa5",
-                  fontWeight: "600",
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  flex: 1,
-                  marginLeft: "10px",
-                  transition: "0.3s",
-                }}
-                onMouseOver={(e) => (e.target.style.backgroundColor = "#e0f7f4")}
-                onMouseOut={(e) => (e.target.style.backgroundColor = "#ffffff")}
-              >
-                Admin
-              </button>
-            </div>
+        .nav-right {
+          display: flex;
+          align-items: center;
+          gap: 20px; /* Space between items */
+        }
 
-            <button
-              onClick={() => setShowRoleSelect(false)}
-              style={{
-                marginTop: "20px",
-                background: "rgba(255,255,255,0.2)",
-                color: "#fff",
-                border: "1px solid rgba(255,255,255,0.4)",
-                borderRadius: "8px",
-                padding: "8px 20px",
-                cursor: "pointer",
-                transition: "0.3s",
-              }}
-              onMouseOver={(e) => (e.target.style.background = "rgba(255,255,255,0.3)")}
-              onMouseOut={(e) => (e.target.style.background = "rgba(255,255,255,0.2)")}
-            >
-              Cancel
-            </button>
-          </div>
+        .nav-right a {
+          text-decoration: none;
+          color: #333;
+          font-weight: 500;
+        }
 
-          {/* ✨ Animations */}
-          <style>{`
-            @keyframes fadeIn {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-            @keyframes scaleIn {
-              from { transform: scale(0.9); opacity: 0; }
-              to { transform: scale(1); opacity: 1; }
-            }
-          `}</style>
-        </div>
-      )}
+        .nav-right a:hover {
+          color: #007bff;
+        }
+
+        .logout-btn {
+          padding: 5px 12px;
+          border: none;
+          background-color: #ff4d4d;
+          color: white;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        .logout-btn:hover {
+          background-color: #e60000;
+        }
+      `}</style>
     </>
   );
 }

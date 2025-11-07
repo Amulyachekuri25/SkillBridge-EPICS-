@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminLogin() {
@@ -10,11 +10,10 @@ export default function AdminLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/adminlogin", {
+      const res = await API.post("http://localhost:5000/api/admin/adminlogin", {
         email,
         password,
       });
-
       if (res.data && res.data.token) {
         localStorage.setItem("adminToken", res.data.token);
         localStorage.setItem("userType", "admin");

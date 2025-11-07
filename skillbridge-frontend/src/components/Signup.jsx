@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
@@ -18,7 +18,7 @@ export default function Signup() {
         alert("Please fill name, email and password.");
         return;
       }
-      await axios.post("http://localhost:5000/api/auth/signup", {
+      await API.post("http://localhost:5000/api/auth/signup", {
         full_name: fullName,
         roll_number: rollNumber,
         email,
