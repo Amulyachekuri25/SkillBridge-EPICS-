@@ -1,33 +1,101 @@
-import React, { useState } from "react";
-import API from "../axiosConfig";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 function Internships() {
   const [year, setYear] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showInternships, setShowInternships] = useState(false);
+  const [showApplyDialog, setShowApplyDialog] = useState(false);
+  const [selectedInternship, setSelectedInternship] = useState(null);
+  const [dialogLoading, setDialogLoading] = useState(false);
+  const [wasOpened, setWasOpened] = useState(false);
 
-  // Fetch internships based on year
- const fetchInternships = async () => {
-  if (!year) return;
-  setLoading(true);
-  setError("");
-  try {
-    const res = await axios.get(`http://localhost:5000/api/internships?year=${year}`);
-    setData(res.data);
-    setShowInternships(true);
-  } catch (err) {
-    setError("⚠️ Failed to fetch internships. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+  // Fetch internships
+  const fetchInternships = async () => {
+    if (!year) return;
+    setLoading(true);
+    setError("");
 
+    try {
+      const res = await axios.get(`/api/internships?year=${year}`);
+      setData(res.data);
+      setShowInternships(true);
+    } catch (err) {
+      setError("⚠️ Failed to fetch internships. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // -------------------------------
-  // STEP 1: YEAR SELECTION SCREEN (unchanged)
-  // -------------------------------
+  // Detect when user returns from opened link
+  useEffect(() => {
+    const handleFocus = () => {
+      if (wasOpened && showInternships) {
+        setShowApplyDialog(true);
+        setWasOpened(false);
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [wasOpened, showInternships]);
+
+  // Handle opening internship link
+  const handleOpenInternship = (internship) => {
+    setSelectedInternship(internship);
+    setWasOpened(true);
+    window.open(internship.link, "_blank");
+  };
+
+  // Handle apply confirmation
+  const handleApplyConfirmation = async (didApply) => {
+    if (didApply && selectedInternship) {
+      setDialogLoading(true);
+      try {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const userId = user.id;
+
+        if (!userId) {
+          alert("Please log in to save your application");
+          setShowApplyDialog(false);
+          return;
+        }
+
+        const payload = {
+          userId,
+          internshipTitle: selectedInternship.title,
+          companyName: selectedInternship.company,
+          source: "Unstop",
+          applicationUrl: selectedInternship.link,
+          applicationDate: new Date().toISOString().split('T')[0],
+        };
+
+        console.log("Sending payload:", payload);
+
+        const response = await axios.post("/api/applications/verify-application", payload);
+        
+        console.log("Response:", response.data);
+        alert("✅ Internship application added to your profile!");
+      } catch (err) {
+        console.error("Error saving application:", err);
+        console.error("Error message:", err.message);
+        console.error("Error response:", err.response?.data);
+        const errorMsg = err.response?.data?.error || err.message || "Failed to save application";
+        alert(`❌ ${errorMsg}`);
+      } finally {
+        setDialogLoading(false);
+        setShowApplyDialog(false);
+      }
+    } else {
+      setShowApplyDialog(false);
+    }
+  };
+
+  // -----------------------------------------
+  // STEP 1: SELECT YEAR SCREEN
+  // -----------------------------------------
   if (!showInternships) {
     return (
       <div
@@ -117,9 +185,9 @@ function Internships() {
     );
   }
 
-  // -------------------------------
-  // STEP 2: INTERNSHIP DISPLAY SCREEN (UI upgraded)
-  // -------------------------------
+  // -----------------------------------------
+  // STEP 2: SHOW INTERNSHIP CARDS
+  // -----------------------------------------
   return (
     <div
       style={{
@@ -128,6 +196,7 @@ function Internships() {
         padding: "3rem 1rem",
       }}
     >
+      {/* Back Button */}
       <button
         onClick={() => setShowInternships(false)}
         style={{
@@ -142,10 +211,7 @@ function Internships() {
           fontSize: "1rem",
           cursor: "pointer",
           boxShadow: "0 4px 18px #6366f140",
-          transition: "background 0.2s, transform 0.2s",
         }}
-        onMouseOver={e => (e.target.style.backgroundColor = "#4f46e5")}
-        onMouseOut={e => (e.target.style.backgroundColor = "#6366f1")}
       >
         ⬅ Back
       </button>
@@ -157,7 +223,6 @@ function Internships() {
           color: "#3730a3",
           textAlign: "center",
           marginBottom: "2.5rem",
-          letterSpacing: "2px",
         }}
       >
         <span
@@ -168,8 +233,6 @@ function Internships() {
             padding: "0.3rem 1.2rem",
             fontSize: "1.1rem",
             marginRight: "0.7rem",
-            boxShadow: "0 2px 10px #6366f15a",
-            verticalAlign: "middle",
           }}
         >
           {year} Year
@@ -177,147 +240,151 @@ function Internships() {
         Internships
       </h2>
 
+      {/* Loading */}
       {loading && (
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 180 }}>
-          <div className="spinner" style={{
-            border: "5px solid #b6ccfb",
-            borderTop: "5px solid #4f46e5",
-            borderRadius: "50%",
-            width: 60, height: 60,
-            animation: "spin 1s linear infinite",
-            marginRight: 16,
-          }}></div>
-          <span style={{ fontSize: 20, color: "#475569" }}>⏳ Loading internships...</span>
-          <style>
-            {`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}
-          </style>
-        </div>
+        <p style={{ textAlign: "center", fontSize: "1.2rem" }}>
+          ⏳ Loading internships...
+        </p>
       )}
+
+      {/* Error */}
       {error && (
-        <p style={{ textAlign: "center", color: "#dc2626", fontSize: "1.16rem", fontWeight: 500 }}>
+        <p style={{ textAlign: "center", color: "red", fontSize: "1.2rem" }}>
           {error}
         </p>
       )}
 
+      {/* Internship Cards */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           gap: "2rem",
-          marginTop: "3rem",
+          marginTop: "2rem",
         }}
       >
-        {!loading && data.length > 0 ? (
+        {!loading &&
+          data.length > 0 &&
           data.map((i, index) => (
             <div
               key={index}
               style={{
-                background: "rgba(255,255,255,0.8)",
-                border: "2px solid #dbeafe",
-                borderRadius: "25px",
-                boxShadow: "0 4px 28px #6366f120",
-                padding: "2rem",
-                backdropFilter: "blur(5px)",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                position: "relative",
-                overflow: "hidden",
-                outline: "2.5px solid #a5b4fc",
-                outlineOffset: "5px",
-              }}
-              onMouseOver={e => {
-                e.currentTarget.style.boxShadow = "0 8px 40px #6366f19a";
-                e.currentTarget.style.transform = "scale(1.027)";
-              }}
-              onMouseOut={e => {
-                e.currentTarget.style.boxShadow = "0 4px 28px #6366f120";
-                e.currentTarget.style.transform = "scale(1)";
+                background: "white",
+                borderRadius: "20px",
+                padding: "1.5rem",
+                boxShadow: "0 4px 25px rgba(0,0,0,0.1)",
+                transition: "0.2s",
               }}
             >
-              <h3
-                style={{
-                  fontSize: "1.48rem",
-                  fontWeight: "600",
-                  color: "#3730a3",
-                  marginBottom: "0.2rem",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  letterSpacing: ".5px",
-                }}
-              >
-                <span role="img" aria-label="opportunity" style={{ fontSize: "1.3em" }}>💼</span>
-                {i.title}
+              <h3 style={{ fontSize: "1.4rem", fontWeight: 600, color: "#3730a3" }}>
+                💼 {i.title}
               </h3>
-              <p style={{ color: "#373737", fontWeight: "500", margin: "0.8rem 0 0.1rem 0" }}>
-                <span style={{
-                  color: "#6366f1",
-                  fontWeight: 700,
-                  marginRight: "0.25rem",
-                  display: "inline-block",
-                  verticalAlign: "middle",
-                }}>🏢 Company:</span>
-                {i.company}
-              </p>
-              {i.skills && (
-                <p style={{ color: "#64748b", fontSize: "1rem", margin: "0.1rem 0 0.8rem 0" }}>
-                  <span
-                    style={{
-                      color: "#818cf8",
-                      fontWeight: "600",
-                      marginRight: "0.3rem",
-                      display: "inline-block",
-                      verticalAlign: "middle",
-                    }}>🛠 Skills:</span>
-                  {i.skills}
-                </p>
-              )}
 
+              <p style={{ color: "#444", fontWeight: 500 }}>
+                🏢 Company: {i.company}
+              </p>
+
+              <p style={{ color: "#666", marginBottom: "1rem" }}>
+                🛠 Skills: {i.skills}
+              </p>
+
+              {/* View Link */}
               <a
                 href={i.link}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleOpenInternship(i);
+                }}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   display: "block",
-                  width: "100%",
-                  marginTop: "0.5rem",
-                  padding: "0.85rem 0",
-                  background: "linear-gradient(90deg,#6366f1 20%,#818cf8 100%)",
+                  padding: "0.8rem",
+                  background: "#6366f1",
                   color: "white",
                   textAlign: "center",
-                  fontWeight: 700,
-                  fontSize: "1.13rem",
-                  border: "none",
-                  borderRadius: "12px",
-                  boxShadow: "0 2px 12px #818cf880",
-                  transition: "background 0.2s, box-shadow 0.2s, transform 0.2s",
+                  borderRadius: "10px",
                   textDecoration: "none",
-                  letterSpacing: ".07em",
-                  outline: "none",
+                  fontWeight: 600,
                   cursor: "pointer",
                 }}
-                onMouseOver={e => { e.target.style.background = "linear-gradient(90deg,#3730a3 0%, #6366f1 80%)"; e.target.style.transform = "scale(1.035)"; }}
-                onMouseOut={e => { e.target.style.background = "linear-gradient(90deg,#6366f1 20%,#818cf8 100%)"; e.target.style.transform = "scale(1)"; }}
               >
                 🔗 View Internship
               </a>
             </div>
-          ))
-        ) : (
-          !loading && (
-            <div style={{ gridColumn: "1/-1", textAlign: "center", color: "#64748b", fontSize: "1.2rem" }}>
-              <span style={{ display: "block", margin: "0 auto 1.5rem", width: 60, height: 60 }}>
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <circle cx="24" cy="24" r="22" fill="#c7d2fe" />
-                  <path d="M17 29c.7-2 3.2-3 7-3s6.3 1 7 3" stroke="#3730a3" strokeWidth="2" strokeLinecap="round" />
-                  <ellipse cx="18.5" cy="21" rx="2" ry="2.5" fill="#6366f1" />
-                  <ellipse cx="29.5" cy="21" rx="2" ry="2.5" fill="#6366f1" />
-                </svg>
-              </span>
-              😕 No internships found for this year.
-            </div>
-          )
-        )}
+          ))}
       </div>
+
+      {/* Apply Confirmation Dialog */}
+      {showApplyDialog && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              borderRadius: "20px",
+              padding: "2rem",
+              maxWidth: "400px",
+              textAlign: "center",
+              boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            <h3 style={{ fontSize: "1.5rem", color: "#3730a3", marginBottom: "1rem" }}>
+              Did you apply for this internship?
+            </h3>
+            <p style={{ color: "#666", marginBottom: "2rem" }}>
+              {selectedInternship?.title}
+            </p>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <button
+                onClick={() => handleApplyConfirmation(false)}
+                disabled={dialogLoading}
+                style={{
+                  padding: "0.8rem 1.5rem",
+                  background: "#e5e7eb",
+                  color: "#374151",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                }}
+              >
+                No
+              </button>
+              <button
+                onClick={() => handleApplyConfirmation(true)}
+                disabled={dialogLoading}
+                style={{
+                  padding: "0.8rem 1.5rem",
+                  background: "#6366f1",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  opacity: dialogLoading ? 0.6 : 1,
+                }}
+              >
+                {dialogLoading ? "Saving..." : "Yes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

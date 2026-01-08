@@ -1,4 +1,3 @@
-
 from bs4 import BeautifulSoup
 import requests
 import mysql.connector
@@ -25,8 +24,6 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
     "Accept-Language": "en-US,en;q=0.5"
 }
-
-
 def is_fake_internship(company_url):
     """
     Calls the Node.js fake internship detector and returns True/False.
@@ -83,31 +80,54 @@ def predict_years(eligibility):
     ]
     if any(phrase in eligibility for phrase in open_phrases):
         return [1, 2, 3, 4]
-
     return []
-
-# ---------- REVISED DEADLINE PARSING FUNCTION (Robustly returns date) ----------
 def parse_deadline(soups):
-    """
-    Extracts the application deadline date from the internship page.
-    Returns a calculated date (1 month from now) if the deadline is not found.
-    """
     try:
-        # Check for the explicit 'Apply By' date
-        labels = soups.find_all('div', class_='other_detail_item')
-        for label in labels:
-            text = label.text.strip().lower()
-            if "apply by" in text:
-                date_text = text.replace("apply by", "").strip()
-                # Assuming format like "15 Nov' 25"
-                date_obj = datetime.strptime(date_text, "%d %b' %y").date()
-                return date_obj
-    except Exception:
-        pass # If parsing fails, proceed to calculated deadline
-    
-    # If deadline is not found or parsing fails, return a calculated date (1 month from now)
-    calculated_deadline = date.today() + relativedelta(months=1)
-    return calculated_deadline
+        # Find the apply_by block explicitly
+        apply_by_div = soups.find('div', class_='other_detail_item apply_by')
+        if apply_by_div:
+            date_text = apply_by_div.find('div', class_='item_body').text.strip()
+
+            # Clean the string: "5 Dec' 25" -> "5 Dec 25"
+            date_text = date_text.replace("'", "")
+
+            # Convert to date object
+            date_obj = datetime.strptime(date_text, "%d %b %y").date()
+            return date_obj
+
+    except Exception as e:
+        print("Deadline parsing failed:", e)
+
+    return date.today() + relativedelta(months=1)
+# ---------------- STIPEND EXTRACTION & PARSING ----------------
+def parse_stipend(soups):
+    stipend_tag = soups.find('span', class_='stipend')
+    stipend_raw = stipend_tag.text.strip() if stipend_tag else "0"
+
+    # Convert to lowercase for easier matching
+    stipend_lower = stipend_raw.lower()
+
+    # Handle common textual cases
+    if any(keyword in stipend_lower for keyword in ["competitive", "performance", "unpaid", "no stipend", "not paid"]):
+        stipend_value = 0.0
+
+    else:
+        # Remove words like lump sum, month, etc.
+        cleaned = stipend_raw.replace("lump sum", "").replace("month", "").replace("per month", "")
+        cleaned = cleaned.replace(",", "").replace("₹", "").replace("$", "").strip()
+
+        # Handle ranges (take minimum value)
+        if "-" in cleaned:
+            cleaned = cleaned.split("-")[0].strip()
+
+        try:
+            stipend_value = float(cleaned)
+            # Dollar conversion approximate rate (optional, can remove if not needed)
+            if "$" in stipend_raw:
+                stipend_value = stipend_value * 80  # convert USD to INR approx rate
+        except:
+            stipend_value = 0.0
+    return stipend_value
 
 # ---------- MODIFIED SAVE TO DATABASE FUNCTION (REMOVED UPDATE LOGIC) ----------
 def save_to_db(internship):
@@ -125,12 +145,12 @@ def save_to_db(internship):
         # 3. Case: New Record (INSERT)
         cursor.execute('''
             INSERT INTO internships 
-            (title, company, company_url, skills, eligibility, source, last_updated, deadline, link, year)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
+            (title, company, company_url, skills, eligibility, source, last_updated, deadline, link, year,stipend)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s)
         ''', (
             internship['title'], internship['company'], internship['company_url'],
             internship['skills'], internship['eligibility'], internship['source'],
-            internship['last_updated'], deadline_to_save, internship['link'], internship['year']
+            internship['last_updated'], deadline_to_save, internship['link'], internship['year'],internship['stipend']
         ))
         print(f"Added internship ({internship['year']} yr): {internship['title']} (Deadline: {deadline_to_save})")
     
@@ -179,7 +199,7 @@ def scrape_internshala():
                 
                 # Deadline - USES REVISED FUNCTION
                 deadline = parse_deadline(soups)
-
+                stipend= parse_stipend(soups)
                 # Core internship info
                 internship = {
                     'title': title,
@@ -190,7 +210,8 @@ def scrape_internshala():
                     'source': 'Internshala',
                     'last_updated': date.today(),
                     'link': intern_link,
-                    'deadline' : deadline
+                    'deadline' : deadline,
+                    'stipend': stipend
                 }
 
                 # Predict eligible years

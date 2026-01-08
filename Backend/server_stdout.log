@@ -1,0 +1,97 @@
+[dotenv@17.2.3] injecting env (6) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+🚀 Starting full scraping job...
+🧹 Step 4: Preprocessing internship data...
+Server running on http://localhost:5000
+✅ MySQL Connected...
+
+🧹 Internship Cleanup Started ...
+
+[OK] student_applications table ready
+✅ Removed internships without title or company
+✅ Removed outdated internships: 0
+✅ Removed internships with no apply link
+
+🎯 Cleanup Completed Successfully!
+
+✅ All scrapers finished successfully!
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 3
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 3
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 3
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 3
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 3
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 3
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 4
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 4
+[INFO] Fetching applications for user: 12
+[INFO] Found applications: 4
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 0
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 2
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 2
+[INFO] Fetching applications for user: 13
+[INFO] Found applications: 2
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1
+[INFO] Fetching applications for user: 10
+[INFO] Found applications: 1

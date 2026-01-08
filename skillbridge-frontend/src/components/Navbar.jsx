@@ -105,7 +105,6 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Navbar() {
   const navigate = useNavigate();
   const userToken = localStorage.getItem("token");
-  const adminToken = localStorage.getItem("adminToken");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -126,7 +125,7 @@ export default function Navbar() {
           <Link to="/">Home</Link>
           <Link to="/about">About</Link>
           <Link to="/faq">FAQs</Link>
-          <Link to="/contact">Contact</Link>
+          
 
           {/* Student Logged In */}
           {userToken && (
@@ -139,20 +138,12 @@ export default function Navbar() {
             </>
           )}
 
-          {/* Admin Logged In */}
-          {adminToken && (
-            <>
-              <Link to="/admin/dashboard">Admin Dashboard</Link>
-              <button onClick={handleLogout} className="logout-btn">Logout</button>
-            </>
-          )}
-
           {/* Not Logged In */}
-          {!userToken && !adminToken && (
+          {!userToken && (
             <>
               <Link to="/login">Login</Link>
               <Link to="/signup">Signup</Link>
-              <Link to="/adminlogin">Admin Login</Link>
+              
             </>
           )}
         </div>
